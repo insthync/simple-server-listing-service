@@ -8,16 +8,27 @@ export class Handler
     gameServers : { [id: string] : ServerData; } = {}
     healthTimes : { [id: string] : number; } = {}
 
-    constructor(periodSeconds : number = 5000) {
+    constructor(periodSeconds : number = 5000)
+    {
         this.periodSeconds = periodSeconds;
     }
 
-    GetGameServers() : ServerData[] {
+    GetGameServers() : ServerData[]
+    {
         const result : ServerData[] = [];
         for (const id in this.gameServers) {
             result.push(this.gameServers[id]);
         }
         return result;
+    }
+
+    GetTotalPlayer() : number
+    {
+        let count = 0;
+        for (const id in this.gameServers) {
+            count += this.gameServers[id].currentPlayer;
+        }
+        return count;
     }
 
     List(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
@@ -27,6 +38,16 @@ export class Handler
         context.response.body = {
             success : true,
             gameServers
+        };
+    }
+
+    TotalPlayer(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+    {
+        const totalPlayer = this.GetTotalPlayer();
+        context.response.status = 200;
+        context.response.body = {
+            success : true,
+            totalPlayer
         };
     }
 

@@ -7,6 +7,7 @@ const handler = new Handler(Number(Deno.env.get('PERIOD_SECONDS')) * 1000);
 const router = new Router();
 router
   .get("/", (context) => handler.List(context))
+  .get("/totalPlayer", (context) => handler.TotalPlayer(context))
   .post("/connect", async (context) => await handler.Connect(context))
   .post("/health", async (context) => await handler.Health(context))
   .put("/update", async (context) => await handler.Update(context))
