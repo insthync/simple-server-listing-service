@@ -1,6 +1,6 @@
 import { RouterContext } from "https://deno.land/x/oak/mod.ts";
 import { nanoid } from "https://deno.land/x/nanoid/mod.ts";
-import { ServerData } from "./server_data.ts";
+import { IServerData, ServerData } from "./server_data.ts";
 
 export class Handler
 {
@@ -37,9 +37,9 @@ export class Handler
         else
         {
             const body = await context.request.body();
-            const value = body.value;
+            const value : IServerData = body.value;
             // NOTE: Not sure there is a form validation library or not.
-            const gameServer : ServerData = value;
+            const gameServer : ServerData = new ServerData().SetValue(value);
             gameServer.id = nanoid(16);
             this.gameServers[gameServer.id] = gameServer;
             context.response.status = 200;
@@ -55,9 +55,40 @@ export class Handler
 
     }
 
-    Config(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+    async Config(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
     {
-
+        if (!context.request.hasBody)
+        {
+            context.response.status = 400;
+            context.response.body = {
+              success: false,
+              error: "No Data",
+            };
+        }
+        else
+        {
+            const body = await context.request.body();
+            const value : IServerData = body.value;
+            const id : string | undefined = value.id;
+            if (id !== undefined && id in this.gameServers)
+            {
+                const gameServer : ServerData = this.gameServers[id].SetValue(value);
+                this.gameServers[gameServer.id] = gameServer;
+                context.response.status = 200;
+                context.response.body = {
+                  success: true,
+                  gameServer
+                };
+            }
+            else
+            {
+                context.response.status = 404;
+                context.response.body = {
+                  success: false,
+                  error: "Cannot find the server",
+                };
+            }
+        }
     }
 
     Shutdown(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
