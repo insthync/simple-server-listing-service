@@ -91,8 +91,37 @@ export class Handler
         }
     }
 
-    Shutdown(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+    async Shutdown(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
     {
-
+        if (!context.request.hasBody)
+        {
+            context.response.status = 400;
+            context.response.body = {
+              success: false,
+              error: "No Data",
+            };
+        }
+        else
+        {
+            const body = await context.request.body();
+            const value : IServerData = body.value;
+            const id : string | undefined = value.id;
+            if (id !== undefined && id in this.gameServers)
+            {
+                delete this.gameServers[id];
+                context.response.status = 200;
+                context.response.body = {
+                  success: true,
+                };
+            }
+            else
+            {
+                context.response.status = 404;
+                context.response.body = {
+                  success: false,
+                  error: "Cannot find the server",
+                };
+            }
+        }
     }
 }
