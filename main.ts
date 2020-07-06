@@ -7,7 +7,7 @@ router
   .get("/", handler.List)
   .post("/connect", handler.Connect)
   .post("/health", handler.Health)
-  .put("/config", handler.Config)
+  .put("/config", handler.Update)
   .post("/shutdown", handler.Shutdown);
 
 const app = new Application();

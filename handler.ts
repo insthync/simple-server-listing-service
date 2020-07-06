@@ -55,7 +55,7 @@ export class Handler
 
     }
 
-    async Config(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+    async Update(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
     {
         if (!context.request.hasBody)
         {
