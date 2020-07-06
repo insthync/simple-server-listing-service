@@ -9,7 +9,7 @@ router
   .get("/", (context) => handler.List(context))
   .post("/connect", async (context) => await handler.Connect(context))
   .post("/health", async (context) => await handler.Health(context))
-  .put("/config", async (context) => await handler.Update(context))
+  .put("/update", async (context) => await handler.Update(context))
   .post("/shutdown", async (context) => await handler.Shutdown(context));
 
 const app = new Application();
