@@ -14,4 +14,7 @@ const app = new Application();
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-await app.listen({ port: 8000 });
+await Promise.all([
+  handler.HealthHandle(),
+  app.listen({ port: 8000 })
+]);

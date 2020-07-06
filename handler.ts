@@ -4,6 +4,7 @@ import { IServerData, ServerData } from "./server_data.ts";
 
 export class Handler
 {
+    periodSeconds : number = 5000;
     gameServers : { [id: string] : ServerData; } = {}
     healthTimes : { [id: string] : number; } = {}
 
@@ -49,6 +50,23 @@ export class Handler
               success: true,
               gameServer
             };
+        }
+    }
+
+    async HealthHandle()
+    {
+        while (true)
+        {
+            for (const id in this.gameServers) {
+                if (Date.now() - this.healthTimes[id] >= this.periodSeconds)
+                {
+                    // Kick unhealthy (timed out) game servers
+                    delete this.gameServers[id];
+                    delete this.healthTimes[id];
+                }
+            }
+            // Delay 1 second
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
 
