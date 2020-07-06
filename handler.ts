@@ -4,9 +4,13 @@ import { IServerData, ServerData } from "./server_data.ts";
 
 export class Handler
 {
-    periodSeconds : number = 5000;
+    periodSeconds : number;
     gameServers : { [id: string] : ServerData; } = {}
     healthTimes : { [id: string] : number; } = {}
+
+    constructor(periodSeconds : number = 5000) {
+        this.periodSeconds = periodSeconds;
+    }
 
     GetGameServers() : ServerData[] {
         const result : ServerData[] = [];
