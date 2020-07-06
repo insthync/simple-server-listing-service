@@ -44,7 +44,9 @@ export class Handler
             const gameServer : ServerData = new ServerData().SetValue(value);
             gameServer.id = nanoid(16);
             this.gameServers[gameServer.id] = gameServer;
-            this.healthTimes[gameServer.id] = Date.now();
+            const time = Date.now();
+            this.healthTimes[gameServer.id] = time;
+            this.Log('Server id ' + gameServer.id + ' connected at ' + time);
             context.response.status = 200;
             context.response.body = {
               success: true,
@@ -63,6 +65,7 @@ export class Handler
                     // Kick unhealthy (timed out) game servers
                     delete this.gameServers[id];
                     delete this.healthTimes[id];
+                    this.Log('Server id ' + id + ' timed out.');
                 }
             }
             // Delay 1 second
@@ -87,7 +90,9 @@ export class Handler
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.healthTimes)
             {
-                this.healthTimes[id] = Date.now();
+                const time = Date.now();
+                this.healthTimes[id] = time;
+                this.Log('Server id ' + id + ' health update at ' + time);
                 context.response.status = 200;
                 context.response.body = {
                   success: true,
@@ -159,6 +164,7 @@ export class Handler
             {
                 delete this.gameServers[id];
                 delete this.healthTimes[id];
+                this.Log('Server id ' + id + ' shutdown');
                 context.response.status = 200;
                 context.response.body = {
                   success: true,
@@ -173,5 +179,9 @@ export class Handler
                 };
             }
         }
+    }
+
+    private Log(text : string) {
+        console.log(text);
     }
 }
