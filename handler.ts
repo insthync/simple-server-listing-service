@@ -1,4 +1,4 @@
-import { RouterContext } from "https://deno.land/x/oak/mod.ts";
+import { RouterContext } from "https://deno.land/x/oak@v5.3.1/mod.ts";
 import { nanoid } from "https://deno.land/x/nanoid/mod.ts";
 import { IServerData, ServerData } from "./server_data.ts";
 
@@ -64,7 +64,7 @@ export class Handler
         else
         {
             const body = await context.request.body();
-            const value = body.value;
+            const value : IServerData = body.value;
             // NOTE: Not sure there is a form validation library or not.
             const gameServer : ServerData = new ServerData().SetValue(value);
             gameServer.id = nanoid(16);
@@ -111,8 +111,8 @@ export class Handler
         else
         {
             const body = await context.request.body();
-            const value = body.value;
-            const id : string | undefined = value ? value.id : undefined;
+            const value : IServerData = body.value;
+            const id : string | undefined = value.id;
             if (id !== undefined && id in this.healthTimes)
             {
                 const time = Date.now();
@@ -147,8 +147,8 @@ export class Handler
         else
         {
             const body = await context.request.body();
-            const value = body.value;
-            const id : string | undefined = value ? value.id : undefined;
+            const value : IServerData = body.value;
+            const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
                 const gameServer : ServerData = this.gameServers[id].SetValue(value);
@@ -183,8 +183,8 @@ export class Handler
         else
         {
             const body = await context.request.body();
-            const value = body.value;
-            const id : string | undefined = value ? value.id : undefined;
+            const value : IServerData = body.value;
+            const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
                 delete this.gameServers[id];
