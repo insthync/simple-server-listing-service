@@ -112,7 +112,7 @@ export class Handler
         {
             const body = await context.request.body();
             const value = body.value;
-            const id : string | undefined = value.id;
+            const id : string | undefined = value ? value.id : undefined;
             if (id !== undefined && id in this.healthTimes)
             {
                 const time = Date.now();
@@ -148,7 +148,7 @@ export class Handler
         {
             const body = await context.request.body();
             const value = body.value;
-            const id : string | undefined = value.id;
+            const id : string | undefined = value ? value.id : undefined;
             if (id !== undefined && id in this.gameServers)
             {
                 const gameServer : ServerData = this.gameServers[id].SetValue(value);
@@ -184,7 +184,7 @@ export class Handler
         {
             const body = await context.request.body();
             const value = body.value;
-            const id : string | undefined = value.id;
+            const id : string | undefined = value ? value.id : undefined;
             if (id !== undefined && id in this.gameServers)
             {
                 delete this.gameServers[id];
