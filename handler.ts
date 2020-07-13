@@ -1,4 +1,4 @@
-import { RouterContext } from "https://deno.land/x/oak@v5.3.1/mod.ts";
+import { RouterContext } from "https://deno.land/x/oak@v6.0.0/mod.ts";
 import { nanoid } from "https://deno.land/x/nanoid/mod.ts";
 import { IServerData, ServerData } from "./server_data.ts";
 
@@ -63,8 +63,8 @@ export class Handler
         }
         else
         {
-            const body = await context.request.body();
-            const value : IServerData = body.value;
+            const body = context.request.body();
+            const value : IServerData = await body.value;
             // NOTE: Not sure there is a form validation library or not.
             const gameServer : ServerData = new ServerData().SetValue(value);
             gameServer.id = nanoid(16);
@@ -110,8 +110,8 @@ export class Handler
         }
         else
         {
-            const body = await context.request.body();
-            const value : IServerData = body.value;
+            const body = context.request.body();
+            const value : IServerData = await body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.healthTimes)
             {
@@ -146,8 +146,8 @@ export class Handler
         }
         else
         {
-            const body = await context.request.body();
-            const value : IServerData = body.value;
+            const body = context.request.body();
+            const value : IServerData = await body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
@@ -182,8 +182,8 @@ export class Handler
         }
         else
         {
-            const body = await context.request.body();
-            const value : IServerData = body.value;
+            const body = context.request.body();
+            const value : IServerData = await body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
