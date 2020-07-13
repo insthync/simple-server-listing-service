@@ -64,7 +64,7 @@ export class Handler
         else
         {
             const body = await context.request.body();
-            const value : IServerData = body.value;
+            const value = body.value;
             // NOTE: Not sure there is a form validation library or not.
             const gameServer : ServerData = new ServerData().SetValue(value);
             gameServer.id = nanoid(16);
@@ -111,7 +111,7 @@ export class Handler
         else
         {
             const body = await context.request.body();
-            const value : IServerData = body.value;
+            const value = body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.healthTimes)
             {
@@ -147,7 +147,7 @@ export class Handler
         else
         {
             const body = await context.request.body();
-            const value : IServerData = body.value;
+            const value = body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
@@ -183,7 +183,7 @@ export class Handler
         else
         {
             const body = await context.request.body();
-            const value : IServerData = body.value;
+            const value = body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {

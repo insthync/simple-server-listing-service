@@ -21,7 +21,7 @@ export class ServerData implements IServerData
     public currentPlayer : number = 0;
     public maxPlayer : number = 0;
 
-    SetValue(serverData : IServerData) : ServerData
+    SetValue(serverData : any) : ServerData
     {
         if (serverData.id !== undefined) this.id = serverData.id;
         if (serverData.address !== undefined) this.address = serverData.address;
