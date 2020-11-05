@@ -1,5 +1,5 @@
 import { RouterContext } from "https://deno.land/x/oak@v6.0.0/mod.ts";
-import { nanoid } from "https://deno.land/x/nanoid/mod.ts";
+import { v4 } from "https://deno.land/std@0.76.0/uuid/mod.ts";
 import { IServerData, ServerData } from "./server_data.ts";
 
 export class Handler
@@ -67,7 +67,7 @@ export class Handler
             const value : IServerData = await body.value;
             // NOTE: Not sure there is a form validation library or not.
             const gameServer : ServerData = new ServerData().SetValue(value);
-            gameServer.id = nanoid(16);
+            gameServer.id = v4.generate();
             this.gameServers[gameServer.id] = gameServer;
             const time = Date.now();
             this.healthTimes[gameServer.id] = time;
