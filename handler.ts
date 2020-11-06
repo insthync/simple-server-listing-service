@@ -84,7 +84,9 @@ export class Handler
     {
         while (true)
         {
-            for (const id in this.gameServers) {
+            let keys = Object.keys(this.gameServers);
+            for (let i = 0; i < keys.length; ++i) {
+                let id = keys[i];
                 if (Date.now() - this.healthTimes[id] >= this.periodSeconds)
                 {
                     // Kick unhealthy (timed out) game servers
