@@ -83,17 +83,24 @@ export class Handler
     async HealthHandle()
     {
         while (true)
-        {
-            let keys = Object.keys(this.gameServers);
-            for (let i = 0; i < keys.length; ++i) {
-                let id = keys[i];
-                if (Date.now() - this.healthTimes[id] >= this.periodSeconds)
-                {
-                    // Kick unhealthy (timed out) game servers
-                    delete this.gameServers[id];
-                    delete this.healthTimes[id];
-                    this.Log('Server id ' + id + ' timed out.');
+        {   
+            try
+            {
+                let keys = Object.keys(this.gameServers);
+                for (let i = 0; i < keys.length; ++i) {
+                    let id = keys[i];
+                    if (Date.now() - this.healthTimes[id] >= this.periodSeconds)
+                    {
+                        // Kick unhealthy (timed out) game servers
+                        delete this.gameServers[id];
+                        delete this.healthTimes[id];
+                        this.Log('Server id ' + id + ' timed out.');
+                    }
                 }
+            }
+            catch (error)
+            {
+                this.Log('Error occurring while handling health checking: ' + error);
             }
             // Delay 1 second
             await new Promise((resolve) => setTimeout(resolve, 1000));
