@@ -1,6 +1,6 @@
 import { Application, Router } from "https://deno.land/x/oak@v6.3.1/mod.ts";
 import { Handler } from "./handler.ts";
-import { config } from "https://deno.land/x/dotenv/mod.ts";
+import { config } from "https://deno.land/x/dotenv@v1.0.1/mod.ts";
 
 config({ export: true });
 const handler = new Handler(Number(Deno.env.get('PERIOD_SECONDS')) * 1000);
