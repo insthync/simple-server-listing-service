@@ -20,7 +20,5 @@ app.use(router.allowedMethods());
 const port = Number(Deno.env.get('PORT'));
 console.log('Server running at port: ' + port);
 
-await Promise.all([
-  handler.HealthHandle(),
-  app.listen({ port })
-]);
+handler.HealthHandle();
+await app.listen({ port });
