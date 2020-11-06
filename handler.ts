@@ -1,5 +1,5 @@
+import { RouterContext } from "https://deno.land/x/oak@v6.3.1/mod.ts";
 import { v4 } from "https://deno.land/std@0.76.0/uuid/mod.ts";
-import { Status as status } from 'https://deno.land/std@0.76.0/http/http_status.ts';
 import { IServerData, ServerData } from "./server_data.ts";
 
 export class Handler
@@ -31,37 +31,39 @@ export class Handler
         return count;
     }
 
-    List(request : any, h : any)
+    List(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
     {
         const gameServers = this.GetGameServers();
-        h.response({
+        context.response.status = 200;
+        context.response.body = {
             success : true,
             gameServers
-        }).code(status.OK);
+        };
     }
 
-    TotalPlayer(request : any, h : any)
+    TotalPlayer(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
     {
         const totalPlayer = this.GetTotalPlayer();
-        h.response({
+        context.response.status = 200;
+        context.response.body = {
             success : true,
             totalPlayer
-        }).code(status.OK);
+        };
     }
 
-    async Connect(request : any, h : any)
+    async Connect(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
     {
-        const bodyText = new TextDecoder().decode(await Deno.readAll(request.body));
-        const body = JSON.parse(bodyText);
-        if (!body.value)
+        if (!context.request.hasBody)
         {
-            h.response({
+            context.response.status = 400;
+            context.response.body = {
               success: false,
               error: "No Data",
-            }).code(status.BadRequest);
+            };
         }
         else
         {
+            const body = context.request.body();
             const value : IServerData = await body.value;
             // NOTE: Not sure there is a form validation library or not.
             const gameServer : ServerData = new ServerData().SetValue(value);
@@ -70,10 +72,11 @@ export class Handler
             const time = Date.now();
             this.healthTimes[gameServer.id] = time;
             this.Log('Server id ' + gameServer.id + ' connected at ' + time);
-            h.response({
+            context.response.status = 200;
+            context.response.body = {
               success: true,
               gameServer
-            }).code(status.OK);
+            };
         }
     }
 
@@ -104,19 +107,19 @@ export class Handler
         }
     }
 
-    async Health(request : any, h : any)
+    async Health(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
     {
-        const bodyText = new TextDecoder().decode(await Deno.readAll(request.body));
-        const body = JSON.parse(bodyText);
-        if (!body.value)
+        if (!context.request.hasBody)
         {
-            h.response({
+            context.response.status = 400;
+            context.response.body = {
               success: false,
               error: "No Data",
-            }).code(status.BadRequest);
+            };
         }
         else
         {
+            const body = context.request.body();
             const value : IServerData = await body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.healthTimes)
@@ -124,67 +127,71 @@ export class Handler
                 const time = Date.now();
                 this.healthTimes[id] = time;
                 this.Log('Server id ' + id + ' health update at ' + time);
-                return h.response({
+                context.response.status = 200;
+                context.response.body = {
                   success: true,
-                }).code(status.OK);
+                };
             }
             else
             {
-                h.response({
+                context.response.status = 404;
+                context.response.body = {
                   success: false,
                   error: "Cannot find the server",
-                }).code(status.NotFound);
+                };
             }
         }
     }
 
-    async Update(request : any, h : any)
+    async Update(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
     {
-        const bodyText = new TextDecoder().decode(await Deno.readAll(request.body));
-        const body = JSON.parse(bodyText);
-        if (!body.value)
+        if (!context.request.hasBody)
         {
-            h.response({
+            context.response.status = 400;
+            context.response.body = {
               success: false,
               error: "No Data",
-            }).code(status.BadRequest);
+            };
         }
         else
         {
+            const body = context.request.body();
             const value : IServerData = await body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
                 const gameServer : ServerData = this.gameServers[id].SetValue(value);
                 this.gameServers[id] = gameServer;
-                return h.response({
+                context.response.status = 200;
+                context.response.body = {
                   success: true,
                   gameServer
-                }).code(status.OK);
+                };
             }
             else
             {
-                h.response({
+                context.response.status = 404;
+                context.response.body = {
                   success: false,
                   error: "Cannot find the server",
-                }).code(status.NotFound);
+                };
             }
         }
     }
 
-    async Shutdown(request : any, h : any)
+    async Shutdown(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
     {
-        const bodyText = new TextDecoder().decode(await Deno.readAll(request.body));
-        const body = JSON.parse(bodyText);
-        if (!body.value)
+        if (!context.request.hasBody)
         {
-            h.response({
+            context.response.status = 400;
+            context.response.body = {
               success: false,
               error: "No Data",
-            }).code(status.BadRequest);
+            };
         }
         else
         {
+            const body = context.request.body();
             const value : IServerData = await body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
@@ -192,16 +199,18 @@ export class Handler
                 delete this.gameServers[id];
                 delete this.healthTimes[id];
                 this.Log('Server id ' + id + ' shutdown');
-                return h.response({
+                context.response.status = 200;
+                context.response.body = {
                   success: true,
-                }).code(status.OK);
+                };
             }
             else
             {
-                h.response({
+                context.response.status = 404;
+                context.response.body = {
                   success: false,
                   error: "Cannot find the server",
-                }).code(status.NotFound);
+                };
             }
         }
     }
