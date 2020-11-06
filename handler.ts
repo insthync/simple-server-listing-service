@@ -1,4 +1,4 @@
-import { RouterContext } from "https://deno.land/x/oak@v6.0.0/mod.ts";
+import { RouterContext } from "https://deno.land/x/oak@v6.3.1/mod.ts";
 import { v4 } from "https://deno.land/std@0.76.0/uuid/mod.ts";
 import { IServerData, ServerData } from "./server_data.ts";
 
