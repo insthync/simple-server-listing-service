@@ -60,7 +60,7 @@ export class Handler
 
     async Connect(req : ServerRequest)
     {
-        const value : IServerData = JSON.parse(await req.json());
+        const value : IServerData = await req.json();
         if (!value)
         {
             await this.Response(req, 400, {
@@ -113,7 +113,7 @@ export class Handler
 
     async Health(req : ServerRequest)
     {
-        const value : IServerData = JSON.parse(await req.json());
+        const value : IServerData = await req.json();
         if (!value)
         {
             await this.Response(req, 400, {
@@ -145,7 +145,7 @@ export class Handler
 
     async Update(req : ServerRequest)
     {
-        const value : IServerData = JSON.parse(await req.json());
+        const value : IServerData = await req.json();
         if (!value)
         {
             await this.Response(req, 400, {
@@ -177,7 +177,7 @@ export class Handler
 
     async Shutdown(req : ServerRequest)
     {
-        const value : IServerData = JSON.parse(await req.json());
+        const value : IServerData = await req.json();
         if (!value)
         {
             await this.Response(req, 400, {
