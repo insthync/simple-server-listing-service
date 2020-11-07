@@ -60,8 +60,8 @@ export class Handler
 
     async Connect(req : ServerRequest)
     {
-        const body = await req.json();
-        if (!body.value)
+        const value : IServerData = JSON.parse(await req.json());
+        if (!value)
         {
             await this.Response(req, 400, {
                 success: false,
@@ -70,7 +70,6 @@ export class Handler
         }
         else
         {
-            const value : IServerData = body.value;
             // NOTE: Not sure there is a form validation library or not.
             const gameServer : ServerData = new ServerData().SetValue(value);
             gameServer.id = v4.generate();
@@ -114,8 +113,8 @@ export class Handler
 
     async Health(req : ServerRequest)
     {
-        const body = await req.json();
-        if (!body.value)
+        const value : IServerData = JSON.parse(await req.json());
+        if (!value)
         {
             await this.Response(req, 400, {
                 success: false,
@@ -124,7 +123,6 @@ export class Handler
         }
         else
         {
-            const value : IServerData = body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.healthTimes)
             {
@@ -147,8 +145,8 @@ export class Handler
 
     async Update(req : ServerRequest)
     {
-        const body = await req.json();
-        if (!body.value)
+        const value : IServerData = JSON.parse(await req.json());
+        if (!value)
         {
             await this.Response(req, 400, {
                 success: false,
@@ -157,7 +155,6 @@ export class Handler
         }
         else
         {
-            const value : IServerData = body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
@@ -180,8 +177,8 @@ export class Handler
 
     async Shutdown(req : ServerRequest)
     {
-        const body = await req.json();
-        if (!body.value)
+        const value : IServerData = JSON.parse(await req.json());
+        if (!value)
         {
             await this.Response(req, 400, {
                 success: false,
@@ -190,7 +187,6 @@ export class Handler
         }
         else
         {
-            const value : IServerData = body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
