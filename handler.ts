@@ -137,7 +137,7 @@ export class Handler
             }
             else
             {
-                await this.Response(req, 400, {
+                await this.Response(req, 404, {
                     success: false,
                     error: "Cannot find the server",
                 });
@@ -170,7 +170,7 @@ export class Handler
             }
             else
             {
-                await this.Response(req, 400, {
+                await this.Response(req, 404, {
                     success: false,
                     error: "Cannot find the server",
                 });
@@ -203,7 +203,7 @@ export class Handler
             }
             else
             {
-                await this.Response(req, 400, {
+                await this.Response(req, 404, {
                     success: false,
                     error: "Cannot find the server",
                 });
