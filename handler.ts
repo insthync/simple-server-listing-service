@@ -1,4 +1,4 @@
-import { RouterContext } from "https://deno.land/x/oak@v6.3.1/mod.ts";
+import { ServerRequest } from "https://servestjs.org/@v1.1.6/mod.ts";
 import { v4 } from "https://deno.land/std@0.76.0/uuid/mod.ts";
 import { IServerData, ServerData } from "./server_data.ts";
 
@@ -31,40 +31,46 @@ export class Handler
         return count;
     }
 
-    List(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+
+    async Response(req : ServerRequest, status : number, body : any)
+    {
+        await req.respond({
+            status,
+            body: JSON.stringify(body),
+        });
+    }
+
+    async List(req : ServerRequest)
     {
         const gameServers = this.GetGameServers();
-        context.response.status = 200;
-        context.response.body = {
-            success : true,
-            gameServers
-        };
+        await this.Response(req, 200, {
+            success: true,
+            gameServers,
+        });
     }
 
-    TotalPlayer(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+    async TotalPlayer(req : ServerRequest)
     {
         const totalPlayer = this.GetTotalPlayer();
-        context.response.status = 200;
-        context.response.body = {
-            success : true,
-            totalPlayer
-        };
+        await this.Response(req, 200, {
+            success: true,
+            totalPlayer,
+        });
     }
 
-    async Connect(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+    async Connect(req : ServerRequest)
     {
-        if (!context.request.hasBody)
+        const body = await req.json();
+        if (!body.value)
         {
-            context.response.status = 400;
-            context.response.body = {
-              success: false,
-              error: "No Data",
-            };
+            await this.Response(req, 400, {
+                success: false,
+                error: "No Data",
+            });
         }
         else
         {
-            const body = context.request.body();
-            const value : IServerData = await body.value;
+            const value : IServerData = body.value;
             // NOTE: Not sure there is a form validation library or not.
             const gameServer : ServerData = new ServerData().SetValue(value);
             gameServer.id = v4.generate();
@@ -72,11 +78,10 @@ export class Handler
             const time = Date.now();
             this.healthTimes[gameServer.id] = time;
             this.Log('Server id ' + gameServer.id + ' connected at ' + time);
-            context.response.status = 200;
-            context.response.body = {
-              success: true,
-              gameServer
-            };
+            await this.Response(req, 200, {
+                success: true,
+                gameServer,
+            });
         }
     }
 
@@ -107,110 +112,101 @@ export class Handler
         }
     }
 
-    async Health(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+    async Health(req : ServerRequest)
     {
-        if (!context.request.hasBody)
+        const body = await req.json();
+        if (!body.value)
         {
-            context.response.status = 400;
-            context.response.body = {
-              success: false,
-              error: "No Data",
-            };
+            await this.Response(req, 400, {
+                success: false,
+                error: "No Data",
+            });
         }
         else
         {
-            const body = context.request.body();
-            const value : IServerData = await body.value;
+            const value : IServerData = body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.healthTimes)
             {
                 const time = Date.now();
                 this.healthTimes[id] = time;
                 this.Log('Server id ' + id + ' health update at ' + time);
-                context.response.status = 200;
-                context.response.body = {
-                  success: true,
-                };
+                await this.Response(req, 200, {
+                    success: true,
+                });
             }
             else
             {
-                context.response.status = 404;
-                context.response.body = {
-                  success: false,
-                  error: "Cannot find the server",
-                };
+                await this.Response(req, 400, {
+                    success: false,
+                    error: "Cannot find the server",
+                });
             }
         }
     }
 
-    async Update(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+    async Update(req : ServerRequest)
     {
-        if (!context.request.hasBody)
+        const body = await req.json();
+        if (!body.value)
         {
-            context.response.status = 400;
-            context.response.body = {
-              success: false,
-              error: "No Data",
-            };
+            await this.Response(req, 400, {
+                success: false,
+                error: "No Data",
+            });
         }
         else
         {
-            const body = context.request.body();
-            const value : IServerData = await body.value;
+            const value : IServerData = body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
                 const gameServer : ServerData = this.gameServers[id].SetValue(value);
                 this.gameServers[id] = gameServer;
-                context.response.status = 200;
-                context.response.body = {
-                  success: true,
-                  gameServer
-                };
+                await this.Response(req, 200, {
+                    success: true,
+                    gameServer,
+                });
             }
             else
             {
-                context.response.status = 404;
-                context.response.body = {
-                  success: false,
-                  error: "Cannot find the server",
-                };
+                await this.Response(req, 400, {
+                    success: false,
+                    error: "Cannot find the server",
+                });
             }
         }
     }
 
-    async Shutdown(context : RouterContext<Record<string | number, string | undefined>, Record<string, any>>)
+    async Shutdown(req : ServerRequest)
     {
-        if (!context.request.hasBody)
+        const body = await req.json();
+        if (!body.value)
         {
-            context.response.status = 400;
-            context.response.body = {
-              success: false,
-              error: "No Data",
-            };
+            await this.Response(req, 400, {
+                success: false,
+                error: "No Data",
+            });
         }
         else
         {
-            const body = context.request.body();
-            const value : IServerData = await body.value;
+            const value : IServerData = body.value;
             const id : string | undefined = value.id;
             if (id !== undefined && id in this.gameServers)
             {
                 delete this.gameServers[id];
                 delete this.healthTimes[id];
                 this.Log('Server id ' + id + ' shutdown');
-                context.response.status = 200;
-                context.response.body = {
-                  success: true,
-                };
+                await this.Response(req, 200, {
+                    success: true,
+                });
             }
             else
             {
-                context.response.status = 404;
-                context.response.body = {
-                  success: false,
-                  error: "Cannot find the server",
-                };
+                await this.Response(req, 400, {
+                    success: false,
+                    error: "Cannot find the server",
+                });
             }
         }
     }
