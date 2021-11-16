@@ -1,6 +1,6 @@
-import { createApp } from "https://deno.land/x/servest@v1.1.6/mod.ts";
+import { createApp } from "https://deno.land/x/servest@v1.3.4/mod.ts";
 import { Handler } from "./handler.ts";
-import { config } from "https://deno.land/x/dotenv@v1.0.1/mod.ts";
+import { config } from "https://deno.land/x/dotenv@v3.1.0/mod.ts";
 
 config({ export: true });
 const handler = new Handler(Number(Deno.env.get('PERIOD_SECONDS')) * 1000);
