@@ -1,4 +1,4 @@
-import { ServerRequest } from "https://servestjs.org/@v1.1.6/mod.ts";
+import { ServerRequest } from "https://deno.land/x/servest@v1.1.6/mod.ts";
 import { v4 } from "https://deno.land/std@0.76.0/uuid/mod.ts";
 import { IServerData, ServerData } from "./server_data.ts";
 
