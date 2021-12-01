@@ -83,28 +83,6 @@ export class Handler
             });
         }
     }
-    
-    HealthHandle()
-    {
-        try
-        {
-            let keys = Object.keys(this.gameServers);
-            for (let i = 0; i < keys.length; ++i) {
-                let id = keys[i];
-                if (Date.now() - this.healthTimes[id] >= this.periodSeconds)
-                {
-                    // Kick unhealthy (timed out) game servers
-                    delete this.gameServers[id];
-                    delete this.healthTimes[id];
-                    console.log('Server id ' + id + ' timed out.');
-                }
-            }
-        }
-        catch (error)
-        {
-            console.log('Error occurring while handling health checking: ' + error);
-        }
-    }
 
     async Health(req : ServerRequest)
     {

@@ -13,6 +13,28 @@ app.post("/health", async (req) => await handler.Health(req));
 app.put("/update", async (req) => await handler.Update(req));
 app.post("/shutdown", async (req) => await handler.Shutdown(req));
 
+const HealthHandle = (handlerInstance: Handler) =>
+{
+    try
+    {
+        let keys = Object.keys(handlerInstance.gameServers);
+        for (let i = 0; i < keys.length; ++i) {
+            let id = keys[i];
+            if (Date.now() - handlerInstance.healthTimes[id] >= handlerInstance.periodSeconds)
+            {
+                // Kick unhealthy (timed out) game servers
+                delete handlerInstance.gameServers[id];
+                delete handlerInstance.healthTimes[id];
+                console.log('Server id ' + id + ' timed out.');
+            }
+        }
+    }
+    catch (error)
+    {
+        console.error('Error occurring while handling health checking: ' + error);
+    }
+};
+setInterval(function() { HealthHandle(handler) }, 1000);
+
 const port = Number(Deno.env.get('PORT'));
-setInterval(handler.HealthHandle, 1000);
 app.listen({ port });
