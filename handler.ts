@@ -76,7 +76,7 @@ export class Handler
             this.gameServers[gameServer.id] = gameServer;
             const time = Date.now();
             this.healthTimes[gameServer.id] = time;
-            this.Log('Server id ' + gameServer.id + ' connected at ' + time);
+            console.log('Server id ' + gameServer.id + ' connected at ' + time);
             await this.Response(req, 200, {
                 success: true,
                 gameServer,
@@ -96,13 +96,13 @@ export class Handler
                     // Kick unhealthy (timed out) game servers
                     delete this.gameServers[id];
                     delete this.healthTimes[id];
-                    this.Log('Server id ' + id + ' timed out.');
+                    console.log('Server id ' + id + ' timed out.');
                 }
             }
         }
         catch (error)
         {
-            this.Log('Error occurring while handling health checking: ' + error);
+            console.log('Error occurring while handling health checking: ' + error);
         }
     }
 
@@ -123,7 +123,7 @@ export class Handler
             {
                 const time = Date.now();
                 this.healthTimes[id] = time;
-                this.Log('Server id ' + id + ' health update at ' + time);
+                console.log('Server id ' + id + ' health update at ' + time);
                 await this.Response(req, 200, {
                     success: true,
                 });
@@ -187,7 +187,7 @@ export class Handler
             {
                 delete this.gameServers[id];
                 delete this.healthTimes[id];
-                this.Log('Server id ' + id + ' shutdown');
+                console.log('Server id ' + id + ' shutdown');
                 await this.Response(req, 200, {
                     success: true,
                 });
@@ -200,9 +200,5 @@ export class Handler
                 });
             }
         }
-    }
-
-    private Log(text : string) {
-        console.log(text);
     }
 }
