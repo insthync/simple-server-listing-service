@@ -86,7 +86,6 @@ export class Handler
     
     HealthHandle()
     {
-        setTimeout(this.HealthHandle, 1000)
         try
         {
             let keys = Object.keys(this.gameServers);

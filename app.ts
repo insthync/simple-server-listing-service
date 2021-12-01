@@ -14,5 +14,5 @@ app.put("/update", async (req) => await handler.Update(req));
 app.post("/shutdown", async (req) => await handler.Shutdown(req));
 
 const port = Number(Deno.env.get('PORT'));
-handler.HealthHandle();
+setInterval(handler.HealthHandle, 1000);
 app.listen({ port });
